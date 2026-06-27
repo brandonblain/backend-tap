@@ -1,0 +1,48 @@
+name: Backend CI (Pint & Tests)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    # Levantamos un contenedor temporal de MongoDB en los servidores de GitHub para las pruebas
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+    - name: Checkout Código
+      uses: actions/checkout@v4
+
+    - name: Configurar Entorno PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, mongodb
+        tools: composer:v2
+
+    - name: Copiar Archivo de Entorno de Pruebas
+      run: cp .env.example .env
+
+    - name: Instalar Dependencias de Composer
+      run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Generar App Key
+      run: php artisan key:generate
+
+    - name: Verificar Estilo de Código (PSR-12 via Laravel Pint)
+      run: ./vendor/bin/pint --test
+
+    - name: Ejecutar Pruebas Unitarias e Integración (PHPUnit)
+      env:
+        DB_CONNECTION: mongodb
+        DB_DSN: "mongodb://127.0.0.1:27017/testing_db"
+        DB_DATABASE: testing_db
+      run: ./vendor/bin/phpunit
