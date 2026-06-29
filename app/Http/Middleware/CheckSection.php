@@ -8,12 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckSection
 {
-    
     public function handle(Request $request, Closure $next, string $section): Response
     {
-        if (!$request->user() || !$request->user()->tokenCan($section)) {
+        if (! $request->user() || ! $request->user()->tokenCan($section)) {
             return response()->json([
-                'message' => 'Acceso denegado. No tienes la sección o permiso asignado en tu perfil.'
+                'message' => 'Acceso denegado. No tienes la sección o permiso asignado en tu perfil.',
             ], 403);
         }
 

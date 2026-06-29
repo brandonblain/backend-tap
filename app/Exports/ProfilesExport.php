@@ -3,10 +3,10 @@
 namespace App\Exports;
 
 use App\Models\Profile;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Carbon\Carbon;
 
 class ProfilesExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -21,19 +21,19 @@ class ProfilesExport implements FromCollection, WithHeadings, WithMapping
             'Código de perfil',
             'Nombre del Perfil',
             'Secciones / Permisos Asignados',
-            'Fecha de Creación'
+            'Fecha de Creación',
         ];
     }
 
     public function map($profile): array
     {
-        $seccionesTexto = !empty($profile->sections) ? implode(', ', $profile->sections) : 'Ninguna sección asignada';
+        $seccionesTexto = ! empty($profile->sections) ? implode(', ', $profile->sections) : 'Ninguna sección asignada';
 
         return [
             $profile->code,
             $profile->name,
             $seccionesTexto,
-            Carbon::parse($profile->created_at)->format('d/m/Y H:i')
+            Carbon::parse($profile->created_at)->format('d/m/Y H:i'),
         ];
     }
 }

@@ -11,9 +11,11 @@ class PersonalAccessToken extends SanctumToken
 
     // Conectamos el token a tu clúster de Atlas
     protected $connection = 'mongodb';
+
     protected $table = 'personal_access_tokens';
-    
+
     // Mongo usa _id de tipo string en lugar de enteros autoincrementables
     protected $primaryKey = '_id';
+
     protected $keyType = 'string';
 }

@@ -3,10 +3,10 @@
 namespace App\Exports;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Carbon\Carbon;
 
 class UsersExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -23,13 +23,13 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
             'Nombre Completo',
             'Teléfono de Contacto',
             'Perfiles Asignados (IDs)',
-            'Fecha de Registro'
+            'Fecha de Registro',
         ];
     }
 
     public function map($user): array
     {
-        $perfilesTexto = !empty($user->profile_ids) ? implode(', ', $user->profile_ids) : 'Ninguno';
+        $perfilesTexto = ! empty($user->profile_ids) ? implode(', ', $user->profile_ids) : 'Ninguno';
 
         return [
             $user->code,
@@ -37,7 +37,7 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
             $user->name,
             $user->phone ?? 'No registrado',
             $perfilesTexto,
-            Carbon::parse($user->created_at)->format('d/m/Y H:i')
+            Carbon::parse($user->created_at)->format('d/m/Y H:i'),
         ];
     }
 }

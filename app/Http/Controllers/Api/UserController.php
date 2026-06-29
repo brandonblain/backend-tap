@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\AuditLog;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UsersExport;
+use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
     public function index(): JsonResponse
     {
         $users = User::orderBy('created_at', 'desc')->get(['code', 'username', 'name', 'created_at']);
+
         return response()->json($users, 200);
     }
-   
+
     public function store(Request $request): JsonResponse
     {
         $request->validate([
@@ -29,13 +30,13 @@ class UserController extends Controller
             'profile_picture' => 'required|string',
             'phone' => 'nullable|string',
             'password' => 'required|string|min:6',
-            'profile_ids' => 'nullable|array'
+            'profile_ids' => 'nullable|array',
         ], [
             'username.unique' => 'El correo electrónico ya se encuentra registrado.',
-            'profile_picture.required' => 'La foto de perfil es obligatoria.'
+            'profile_picture.required' => 'La foto de perfil es obligatoria.',
         ]);
 
-        $generatedCode = 'USR-' . strtoupper(substr(uniqid(), -5));
+        $generatedCode = 'USR-'.strtoupper(substr(uniqid(), -5));
 
         $user = User::create([
             'code' => $generatedCode,
@@ -49,7 +50,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Usuario registrado con éxito.',
-            'user' => $user
+            'user' => $user,
         ], 201);
     }
 
@@ -63,7 +64,7 @@ class UserController extends Controller
             'name' => $user->name,
             'phone' => $user->phone,
             'profile_picture' => $user->profile_picture,
-            'profile_ids' => $user->profile_ids
+            'profile_ids' => $user->profile_ids,
         ], 200);
     }
 
@@ -73,19 +74,19 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string',
-            'username' => 'required|email|unique:users,username,' . $user->id,
+            'username' => 'required|email|unique:users,username,'.$user->id,
             'phone' => 'nullable|string',
             'profile_picture' => 'nullable|string',
-            'profile_ids' => 'nullable|array'
+            'profile_ids' => 'nullable|array',
         ]);
 
         $oldData = $user->toArray();
-        
+
         $user->name = $request->name;
         $user->username = $request->username;
         $user->phone = $request->phone;
         $user->profile_ids = $request->profile_ids ?? [];
-        
+
         if ($request->filled('profile_picture')) {
             $user->profile_picture = $request->profile_picture;
         }
@@ -104,12 +105,12 @@ class UserController extends Controller
             'action' => 'update',
             'target_id' => $user->id,
             'old_data' => $oldData,
-            'new_data' => $user->toArray()
+            'new_data' => $user->toArray(),
         ]);
 
         return response()->json([
             'message' => 'Usuario actualizado con éxito y registrado en bitácora.',
-            'user' => $user
+            'user' => $user,
         ], 200);
     }
 
@@ -129,13 +130,13 @@ class UserController extends Controller
             'action' => 'delete',
             'target_id' => $user->id,
             'old_data' => $user->toArray(),
-            'new_data' => null
+            'new_data' => null,
         ]);
 
         $user->delete();
 
         return response()->json([
-            'message' => 'Usuario eliminado con éxito y registrado en bitácora.'
+            'message' => 'Usuario eliminado con éxito y registrado en bitácora.',
         ], 200);
     }
 
@@ -143,6 +144,7 @@ class UserController extends Controller
     {
         $users = User::orderBy('created_at', 'desc')->get();
         $pdf = Pdf::loadView('pdf.users', ['data' => $users]);
+
         return $pdf->download('reporte-usuarios.pdf');
     }
 

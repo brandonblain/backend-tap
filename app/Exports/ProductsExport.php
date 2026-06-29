@@ -3,10 +3,10 @@
 namespace App\Exports;
 
 use App\Models\Product;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Carbon\Carbon;
 
 class ProductsExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -28,7 +28,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
             'Nombre del producto',
             'Marca / Fabricante',
             'Precio',
-            'Fecha de creación'
+            'Fecha de creación',
         ];
     }
 
@@ -38,8 +38,8 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
             $product->codigo,
             $product->nombre,
             $product->marca,
-            '$' . number_format($product->precio, 2),
-            Carbon::parse($product->created_at)->format('d/m/Y H:i') 
+            '$'.number_format($product->precio, 2),
+            Carbon::parse($product->created_at)->format('d/m/Y H:i'),
         ];
     }
 }

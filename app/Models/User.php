@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use MongoDB\Laravel\Auth\User as Authenticatable; // Clase especial de Mongo para Login
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens; // Clase especial de Mongo para Login
+use MongoDB\Laravel\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
     protected $connection = 'mongodb';
+
     protected $collection = 'users';
 
     protected $fillable = [
@@ -19,7 +20,7 @@ class User extends Authenticatable
         'username', // Tu correo/login
         'password',
         'profile_picture',
-        'profile_ids', //perfiles
+        'profile_ids', // perfiles
     ];
 
     protected $hidden = [

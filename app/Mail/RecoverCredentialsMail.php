@@ -13,6 +13,7 @@ class RecoverCredentialsMail extends Mailable
     use Queueable, SerializesModels;
 
     private string $name;
+
     private string $temporaryPassword;
 
     public function __construct(string $name, string $temporaryPassword)
@@ -31,11 +32,11 @@ class RecoverCredentialsMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            html: "<h2>Hola, {$this->name}</h2>" .
-                  "<p>Se ha solicitado la recuperación de tus credenciales para acceder a <strong>TAP Terminal</strong>.</p>" .
-                  "<p>Tu nueva contraseña de acceso temporal es:</p>" .
-                  "<div style='background: #f4f4f4; padding: 10px; display: inline-block; font-family: monospace; font-size: 16px; font-weight: bold; color: #d9534f;'>#IF_PASSWORD#</div>" .
-                  "<p>Por seguridad, inicia sesión con esta clave y actualízala en cuanto ingreses.</p>"
+            html: "<h2>Hola, {$this->name}</h2>".
+                  '<p>Se ha solicitado la recuperación de tus credenciales para acceder a <strong>TAP Terminal</strong>.</p>'.
+                  '<p>Tu nueva contraseña de acceso temporal es:</p>'.
+                  "<div style='background: #f4f4f4; padding: 10px; display: inline-block; font-family: monospace; font-size: 16px; font-weight: bold; color: #d9534f;'>#IF_PASSWORD#</div>".
+                  '<p>Por seguridad, inicia sesión con esta clave y actualízala en cuanto ingreses.</p>'
         );
     }
 

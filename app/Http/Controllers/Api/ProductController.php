@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\AuditLog;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductsExport;
+use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
+use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
     public function index(): JsonResponse
     {
         $products = Product::orderBy('created_at', 'desc')->get();
+
         return response()->json($products, 200);
     }
 
@@ -25,10 +26,10 @@ class ProductController extends Controller
         $request->validate([
             'nombre' => 'required|string',
             'marca' => 'required|string',
-            'precio' => 'required|numeric|between:0,999.99'
+            'precio' => 'required|numeric|between:0,999.99',
         ]);
 
-        $generatedCode = 'PRD-' . strtoupper(substr(uniqid(), -5));
+        $generatedCode = 'PRD-'.strtoupper(substr(uniqid(), -5));
 
         $product = Product::create([
             'codigo' => $generatedCode,
@@ -47,7 +48,7 @@ class ProductController extends Controller
         $request->validate([
             'nombre' => 'required|string',
             'marca' => 'required|string',
-            'precio' => 'required|numeric|between:0,999.99'
+            'precio' => 'required|numeric|between:0,999.99',
         ]);
 
         $oldData = $product->toArray();
@@ -65,7 +66,7 @@ class ProductController extends Controller
             'action' => 'update',
             'target_id' => $product->id,
             'old_data' => $oldData,
-            'new_data' => $product->toArray()
+            'new_data' => $product->toArray(),
         ]);
 
         return response()->json(['message' => 'Producto actualizado con éxito.', 'product' => $product], 200);
@@ -82,10 +83,11 @@ class ProductController extends Controller
             'action' => 'delete',
             'target_id' => $product->id,
             'old_data' => $product->toArray(),
-            'new_data' => null
+            'new_data' => null,
         ]);
 
         $product->delete();
+
         return response()->json(['message' => 'Producto eliminado con éxito.'], 200);
     }
 
@@ -93,6 +95,7 @@ class ProductController extends Controller
     {
         $products = Product::orderBy('created_at', 'desc')->get();
         $pdf = Pdf::loadView('pdf.products', ['data' => $products]);
+
         return $pdf->download('reporte-productos.pdf');
     }
 
