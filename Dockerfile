@@ -15,7 +15,7 @@ RUN apk add --no-cache \
     build-base
 
 # Instalar extensiones de PHP necesarias y la extensión de MongoDB
-RUN docker-php-ext-install pdo_mysql bcmath xml table_grapheme_cluster_break
+RUN docker-php-ext-install pdo_mysql bcmath xml
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 # Instalar Composer
