@@ -24,7 +24,7 @@ class Product extends Model
         'codigo',
         'nombre',
         'marca',
-        'precio'
+        'precio',
     ];
 
     /**
@@ -34,6 +34,6 @@ class Product extends Model
     protected $casts = [
         'precio' => 'float',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
     ];
 }
